@@ -82,7 +82,8 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
 
 
     Route::prefix('master_api')->group(function () {
-        Route::get('/', [MasterApiController::class, 'index'])->middleware("api.role:master_api_get_list");
+        Route::get('index', [MasterApiController::class, 'index'])->middleware("api.role:master_api_index");
+        Route::get('/', [MasterApiController::class, 'apis'])->middleware("api.role:master_api_get_list");
         Route::get('/{api}', [MasterApiController::class, 'show'])
             ->middleware("api.role:master_api_get")
             ->where(['api' => '[0-9]+']);
