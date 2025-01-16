@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Login;
 use App\Http\Controllers\MasterApiController;
 use App\Http\Controllers\MasterMenuController;
@@ -110,5 +111,9 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
             ->where(['menu' => '[0-9]+']);
         Route::get('/menus', [MasterMenuController::class, 'menus'])
             ->middleware("api.role:master_menu_menus");
+    });
+
+    Route::prefix('home')->group(function () {
+        Route::get('index', [HomeController::class, 'index'])->middleware("api.role:home_index");
     });
 });
