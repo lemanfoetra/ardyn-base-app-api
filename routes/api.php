@@ -53,7 +53,8 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     });
 
     Route::prefix('role')->group(function () {
-        Route::get('/', [RoleController::class, 'index'])->middleware("api.role:role_get_list");
+        Route::get('index', [RoleController::class, 'index'])->middleware("api.role:role_index");
+        Route::get('/', [RoleController::class, 'roles'])->middleware("api.role:role_get_list");
         Route::get('/{roleId}', [RoleController::class, 'show'])
             ->middleware("api.role:role_get_saved_role")
             ->where(['roleId' => '[0-9]+']);
