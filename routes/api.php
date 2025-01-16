@@ -95,7 +95,8 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     });
 
     Route::prefix('master_menu')->group(function () {
-        Route::get('/', [MasterMenuController::class, 'index'])->middleware("api.role:master_menu_get");
+        Route::get('index', [MasterMenuController::class, 'index'])->middleware("api.role:master_menu_index");
+        Route::get('/', [MasterMenuController::class, 'menu'])->middleware("api.role:master_menu_get");
         Route::get('/{menuId}', [MasterMenuController::class, 'show'])
             ->middleware("api.role:master_menu_show")
             ->where(['menuId' => '[0-9]+']);
