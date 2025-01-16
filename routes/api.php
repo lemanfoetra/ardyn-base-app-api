@@ -40,7 +40,8 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     });
 
     Route::prefix('user_management')->group(function () {
-        Route::get('/', [UserManagementController::class, 'index'])->middleware("api.role:user_management_get_list");
+        Route::get('index', [UserManagementController::class, 'index'])->middleware("api.role:user_management_index");
+        Route::get('/', [UserManagementController::class, 'users'])->middleware("api.role:user_management_get_list");
         Route::get('/{user}', [UserManagementController::class, 'show'])
             ->middleware("api.role:user_management_get_saved_user")
             ->where(['user' => '[0-9]+']);

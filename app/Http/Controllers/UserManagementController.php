@@ -12,7 +12,57 @@ use Illuminate\Support\Facades\Validator;
 class UserManagementController extends Controller
 {
 
-    public function index(Request $request)
+    public function index()
+    {
+        try {
+            // MENU ARE OPEN
+            $menu = DB::table('api_modules')
+                ->select(['menus.id', 'menus.menu', 'menus.link'])
+                ->where('url', request()->segment(1) . '/' . request()->segment(2))
+                ->join('menus', 'menus.id', '=', 'api_modules.id_menus')
+                ->first();
+
+            // LIST PERMISSION ON THIS MENU
+            $permissions = [];
+            $results = DB::table('role_menu_accesses')
+                ->select(['access_code'])
+                ->where('id_menus', $menu->id)
+                ->where('id_roles', auth()->user()->id_role)
+                ->get();
+            foreach ($results as $value) {
+                array_push($permissions, $value->access_code);
+            }
+
+            // LIST MENUS
+            $menus = DB::table('menus')
+                ->select(['menu', 'link'])
+                ->join('role_menus', 'role_menus.id_menus', '=', 'menus.id')
+                ->where('role_menus.id_roles', auth()->user()->id_role)
+                ->get();
+
+            return response()->json([
+                'success'   => true,
+                'message'   => '',
+                'data'      => [
+                    'menu'  => [
+                        'name'  => $menu->menu,
+                        'link'  => $menu->link,
+                        'permissions'   => $permissions,
+                    ],
+                    'menus'         => $menus,
+                ],
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success'   => false,
+                'message'   => $th->getMessage(),
+                'data'      => [],
+            ], 500);
+        }
+    }
+
+
+    public function users(Request $request)
     {
         try {
             $users = $this->getUser($request);
