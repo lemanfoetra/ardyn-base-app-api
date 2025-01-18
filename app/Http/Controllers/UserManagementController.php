@@ -18,7 +18,7 @@ class UserManagementController extends Controller
             // MENU ARE OPEN
             $menu = DB::table('api_modules')
                 ->select(['menus.id', 'menus.menu', 'menus.link'])
-                ->where('url', request()->segment(1) . '/' . request()->segment(2))
+                ->where('url', 'like', request()->segment(1) . '/' . request()->segment(2) . '%')
                 ->join('menus', 'menus.id', '=', 'api_modules.id_menus')
                 ->first();
 
@@ -33,13 +33,6 @@ class UserManagementController extends Controller
                 array_push($permissions, $value->access_code);
             }
 
-            // LIST MENUS
-            $menus = DB::table('menus')
-                ->select(['menu', 'link'])
-                ->join('role_menus', 'role_menus.id_menus', '=', 'menus.id')
-                ->where('role_menus.id_roles', auth()->user()->id_role)
-                ->get();
-
             return response()->json([
                 'success'   => true,
                 'message'   => '',
@@ -49,7 +42,6 @@ class UserManagementController extends Controller
                         'link'  => $menu->link,
                         'permissions'   => $permissions,
                     ],
-                    'menus'         => $menus,
                 ],
             ], 200);
         } catch (\Throwable $th) {
